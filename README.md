@@ -68,6 +68,7 @@ Gets multiple medallion and date pairs trips via cache
 
 ### /getTrips/bypassCache
 gets multipe medallion and date pair trips bypassing the cache
+```localhost:8080/getTrips/bypassCache?medallion=D7D598CD99978BD012A87A76A7C891B7&dateTime=2013-12-01%2000:13:00&medallion=123example&dateTime=123example``
 ### /getTrips/singleDate
 gets multiple medallions trips for a single date 
 
