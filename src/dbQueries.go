@@ -121,7 +121,6 @@ func dbQuery(medallion string, dateTime string) (int){
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	fmt.Println("Value not in cache querying database")
 	var sqlquery = fmt.Sprintf("SELECT medallion, pickup_datetime FROM `cabdata`.`cab_trip_data` WHERE medallion = '%s' AND pickup_datetime = '%s'", medallion, dateTime)
 	results, err := db.Query(sqlquery)
 	if err != nil {
