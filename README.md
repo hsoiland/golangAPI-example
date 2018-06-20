@@ -15,7 +15,7 @@ Add /usr/local/go/bin to the PATH environment variable
 
 `export PATH=$PATH:/usr/local/go/bin`
 
-### Installting mySQL
+### Installing mySQL
 For my root password for mysql I just used "root" for simplicity, you can change this in the code in dbQueries.go manually if theres discrepecies with your existing password.
 ```
 sudo apt-get update
