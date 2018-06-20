@@ -8,6 +8,7 @@ import(
 	"database/sql"
 	"fmt"
 	"github.com/patrickmn/go-cache"
+	"github.com/gorilla/mux"
 )
 
 type Trip struct {
@@ -21,22 +22,53 @@ type CountTrips struct {
 	Count int `json:"count"`
 }
 
-func getTripsViaCache(w http.ResponseWriter, r *http.Request) {
+func singleDateViaCache(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	medallion := vars["medallion"]
+	dateTime := vars["dateTime"]
+	getTripsViaCache(medallion, dateTime,w)
+}
+
+func multipleDatesViaCache(w http.ResponseWriter, r *http.Request) {
 	query:= r.URL.Query()
 	medallion := query["medallion"]
 	dateTime := query["dateTime"]
+	for i:= 0; i < len(medallion); i++ {
+		medallion := medallion[i]
+		dateTime := dateTime[i]
+		getTripsViaCache(medallion, dateTime, w)
+	}
+}
 
-	log.Println(medallion)
-	log.Println(dateTime)
+func singleDateBypassCache(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	medallion := vars["medallion"]
+	dateTime := vars["dateTime"]
+	queryStr := medallion + dateTime
+	log.Println("Query is " + queryStr)
+	medallionTrips := getTripsThenCache(medallion, dateTime, queryStr)
+	json.NewEncoder(w).Encode(medallionTrips)
+}
+
+func multipleDatesBypassCache(w http.ResponseWriter, r *http.Request) {
+	query:= r.URL.Query()
+	medallion := query["medallion"]
+	dateTime := query["dateTime"]
 	for i:= 0; i < len(medallion); i++ {
 		medallion := medallion[i]
 		dateTime := dateTime[i]
 		queryStr := medallion + dateTime
 		log.Println("Query is " + queryStr)
-		log.Println("Checking cache first")
-		result, found := c.Get(queryStr)
-		log.Println(found)
+		medallionTrips := getTripsThenCache(medallion, dateTime, queryStr)
+		json.NewEncoder(w).Encode(medallionTrips)
+	}
+}
 
+func getTripsViaCache(medallion string, dateTime string, w http.ResponseWriter) {
+	queryStr := medallion + dateTime
+	log.Println("Query is " + queryStr)
+	log.Println("Checking cache first")
+	result, found := c.Get(queryStr)
 		if found {
 			log.Printf("Cache returned result")
 			var medallionTrips CountTrips
@@ -51,28 +83,9 @@ func getTripsViaCache(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(medallionTrips)
 
 		}
-	}
-
-
 
 }
 
-func getTripsBypassCache (w http.ResponseWriter, r *http.Request) {
-	query:= r.URL.Query()
-	medallion := query["medallion"]
-	dateTime := query["dateTime"]
-
-	log.Println(medallion)
-	log.Println(dateTime)
-	for i:= 0; i < len(medallion); i++ {
-		medallion := medallion[i]
-		dateTime := dateTime[i]
-		queryStr := medallion + dateTime
-		log.Println("Query is " + queryStr)
-		medallionTrips := getTripsThenCache(medallion, dateTime, queryStr)
-		json.NewEncoder(w).Encode(medallionTrips)
-		}
-}
 
 func getTripsThenCache(medallion string, dateTime string, query string) (CountTrips) {
 	count := dbQuery(medallion, dateTime)
@@ -87,6 +100,8 @@ func getTripsThenCache(medallion string, dateTime string, query string) (CountTr
 
 func dbQuery(medallion string, dateTime string) (int){
 	log.Println("Opening SQL connection")
+	// note for production the password should be set in the server for access by the application in a non-vulnerable fashion
+	// and passwords should never be stored in code
 	db, err := sql.Open("mysql", "root:root@/cabdata")
 	if err != nil {
 		log.Fatal(err.Error())
