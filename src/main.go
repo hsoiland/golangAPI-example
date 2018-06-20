@@ -27,7 +27,7 @@ func init() {
 		log.Println("cache doesnt work properly")
 	} else {
 		log.Println(bar)
-		log.Println("bar not found cache working")
+		log.Println("bar not found, cache working")
 	}
 }
 
@@ -35,8 +35,10 @@ func main() {
 	var router = mux.NewRouter()
 
 	router.HandleFunc("/healthcheck", healthCheck).Methods("GET")
-	router.HandleFunc("/getTripsViaCache", getTripsViaCache).Methods("GET")
-	router.HandleFunc("/getTripsBypassCache", getTripsBypassCache).Methods("GET")
+	router.HandleFunc("/getTrips", multipleDatesViaCache).Methods("GET")
+	router.HandleFunc("/getTrips/bypassCache", multipleDatesBypassCache).Methods("GET")
+	router.HandleFunc("/getTrips/singleDate", singleDateViaCache).Methods("GET")
+	router.HandleFunc("/getTrips/singleDate/bypassCache", singleDateBypassCache).Methods("GET")
 	router.HandleFunc("/flushCache", clearCache).Methods("GET")
 	log.Printf("CabTrips is running on port 8080")
 	log.Fatal(http.ListenAndServe("localhost:8080", router))
