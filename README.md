@@ -16,7 +16,7 @@ Add /usr/local/go/bin to the PATH environment variable
 `export PATH=$PATH:/usr/local/go/bin`
 
 ### Installting mySQL
-For my root password for mysql I just used "root" for simplicity, you can change this in the code in cabTrips.go manually if theres discrepecies with your existing password.
+For my root password for mysql I just used "root" for simplicity, you can change this in the code in dbQueries.go manually if theres discrepecies with your existing password.
 ```
 sudo apt-get update
 sudo apt-get install mysql-server
@@ -55,6 +55,17 @@ The go server is now serving on port 8080.
 Checks if service is still active
 ### /flushCache
 Clears the in cache memory
-###
+### /getTrips
+Gets multiple medallion and date pairs trips via cache 
+```localhost:8080/getTrips?medallion=D7D598CD99978BD012A87A76A7C891B7&dateTime=2013-12-01%2000:13:00&medallion=123example&dateTime=123example```
+### /getTrips/bypassCache
+gets multipe medallion and date pair trips bypassing the cache
+### /getTrips/singleDate
+gets multiple medallions trips for a single date 
+```localhost:8080/getTrips/singleDate?medallion=D7D598CD99978BD012A87A76A7C891B7&medallion=123example&dateTime=2013-12-01%2000:13:00```
+### /getTrips/singleDate/bypassCache
+gets multiple medallions for a single date bypassing the existing cache
+```localhost:8080/getTrips/singleDate/bypassCache?medallion=D7D598CD99978BD012A87A76A7C891B7&medallion=123example&dateTime=2013-12-01%2000:13:00```
+
 
 
