@@ -21,12 +21,14 @@ For my root password for mysql I just used "root" for simplicity, you can change
 sudo apt-get update
 sudo apt-get install mysql-server
 ```
+
 ## Running the application
 ###Install the application dependencies
 ```
 go get -u github.com/go-sql-driver/mysql
 go get github.com/patrickmn/go-cache
 ```
+
 ### Setting up the database
 Log into the Database, sql runs after set up so use the password you used for the root user here
 ```
@@ -44,28 +46,38 @@ Enterpassword: ***************
 
 ```
 This will take a while, just wait for it to return to bash cli
+
 ### Run the application
 ```
 cd /src
 go run *
 ```
 The go server is now serving on port 8080.
+
 ## Making Calls to the application
 ### /healthcheck
 Checks if service is still active
+
 ### /flushCache
 Clears the in cache memory
+
 ### /getTrips
 Gets multiple medallion and date pairs trips via cache 
+
 ```localhost:8080/getTrips?medallion=D7D598CD99978BD012A87A76A7C891B7&dateTime=2013-12-01%2000:13:00&medallion=123example&dateTime=123example```
+
 ### /getTrips/bypassCache
 gets multipe medallion and date pair trips bypassing the cache
 ### /getTrips/singleDate
 gets multiple medallions trips for a single date 
+
 ```localhost:8080/getTrips/singleDate?medallion=D7D598CD99978BD012A87A76A7C891B7&medallion=123example&dateTime=2013-12-01%2000:13:00```
+
 ### /getTrips/singleDate/bypassCache
 gets multiple medallions for a single date bypassing the existing cache
+
 ```localhost:8080/getTrips/singleDate/bypassCache?medallion=D7D598CD99978BD012A87A76A7C891B7&medallion=123example&dateTime=2013-12-01%2000:13:00```
+
 
 
 
