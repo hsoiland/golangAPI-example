@@ -50,6 +50,7 @@ func healthCheck(w http.ResponseWriter, r *http.Request) {
 
 func clearCache (w http.ResponseWriter, r *http.Request) {
 	log.Println("Flushing Cache")
+	c.Set("foo", "bar", cache.NoExpiration)
 	json.NewEncoder(w).Encode("Flushing Cache")
 	c.Flush()
 	foo, found :=c.Get("foo")
